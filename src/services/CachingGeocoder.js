@@ -7,32 +7,39 @@ class CachingGeocoderImpl {
 			apiKey: process.env.GOOGLE_MAPS_GEOCODER_API_KEY,
 		});
 		this._queue = [];
-		this._lastQueueItem = -1;
-		this._checkQueue();
+		this._lastIndex = -1;
 		this._timeout = 0;
 		this._cache = {};
+		this._running = false;
+	}
+
+	_queueContainsNewItems() {
+		return this._queue.length - 1 > this._lastIndex;
 	}
 
 	_checkQueue() {
-		if (this._queue.length - 1 > this._lastQueueItem) {
-			var currentQueueItem = this._lastQueueItem + 1;
-			var currentQueue = this._queue[currentQueueItem];
-			this._geocode(currentQueue.location)
+		if (this._running) return;
+
+		if (this._queueContainsNewItems()) {
+			this._running = true;
+			var index = this._lastIndex + 1;
+			var item = this._queue[index];
+			this._geocode(item.location)
 				.then(record => {
-					currentQueue.resolve(record);
+					item.resolve(record);
 					this._timeout = 0;
-					this._lastQueueItem = currentQueueItem;
+					this._lastIndex = index;
 				})
 				.catch(err => {
 					console.log(err);
 					this._timeout = 1000;
 				})
 				.finally(() => {
-					setTimeout(() => this._checkQueue(), this._timeout);
+					this._running = false;
+
+					if (this._queueContainsNewItems())
+						setTimeout(() => this._checkQueue(), this._timeout);
 				});
-		}
-		else {
-			setTimeout(() => this._checkQueue(), this._timeout);
 		}
 	}
 
@@ -58,6 +65,7 @@ class CachingGeocoderImpl {
 				location: location,
 				resolve: resolve,
 			});
+			this._checkQueue();
 		});
 	}
 }
