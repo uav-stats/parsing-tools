@@ -7,7 +7,7 @@
     "build": "babel src --presets es2015 -d lib",
     "clean": "rm -rf lib && mkdir lib",
     "lint": "eslint src",
-    "rebuild": "npm run clean && npm run build && npm run lint"
+    "rebuild": "npm run clean && npm run build"
   },
   "main": "lib/index.js",
   "repository": {
@@ -20,7 +20,10 @@
     "url": "https://github.com/uav-stats/parsing-tools/issues"
   },
   "homepage": "https://github.com/uav-stats/parsing-tools#readme",
-  "dependencies": {},
+  "dependencies": {
+    "bluebird": "^3.2.2",
+    "touch": "^1.0.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.4.5",
     "babel-preset-es2015": "^6.3.13",

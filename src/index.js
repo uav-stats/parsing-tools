@@ -1,1 +1,1 @@
-console.log("Hello, world!");
+import cacheFunction from "./services/FileBackedCacheCurrier";
