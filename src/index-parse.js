@@ -1,7 +1,6 @@
 import geocode from "./services/Geocoder";
 import timezone from "./services/Timezone";
 import readSpreadsheet from "./services/Excel";
-import Promise from "bluebird";
 import program from "commander";
 
 program

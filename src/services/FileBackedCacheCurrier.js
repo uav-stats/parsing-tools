@@ -19,7 +19,7 @@ export default function (func, funcName) {
 	let cache = cacheFile.length && JSON.parse(cacheFile) || {};
 
 	return function() {
-		return new Promise((resolve, reject) => {
+		return new Promise(resolve => {
 			var key = JSON.stringify(arguments);
 			if (key in cache) {
 				resolve(cache[key]);
@@ -28,7 +28,7 @@ export default function (func, funcName) {
 				func.apply(this, arguments)
 					.then(result => cache[key] = result)
 					.then(result => {
-						writeFile(cacheFileName, JSON.stringify(cache));
+						writeFile(cacheFileName, JSON.stringify(cache, null, "\t"));
 						return result;
 					})
 					.then(resolve);
