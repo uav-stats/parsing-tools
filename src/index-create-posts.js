@@ -61,7 +61,7 @@ function generateContent(record) {
 	return `---
 layout: post
 title: ${city}, ${record.location.state} - ${record.report.narrative.split(/\W+/).slice(0,15).join(" ")}
-categories: ${record.location.state},${city}
+categories: ${record.location.state.toLowerCase().replace(/[^a-z\d]+/gi, "-")} ${city.toLowerCase().replace(/[^a-z\d]+/gi, "-")}
 latitude: ${record.location.latitude}
 longitude: ${record.location.longitude}
 city: ${city}
