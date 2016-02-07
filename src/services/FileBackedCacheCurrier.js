@@ -1,32 +1,38 @@
 import fs from "fs";
 import path from "path";
 import touch from "touch";
+import Promise from "bluebird";
 
-export default function (func, cacheFileName) {
+let writeFile = Promise.promisify(fs.writeFile);
+
+export default function (func, funcName) {
 	let moduleName = path.basename(__filename, ".js");
-	if (!func.name) {
+	funcName = funcName || func.name;
+	if (!funcName) {
 		throw new Error("Function to be cached must have a name");
 	}
 
-	if (!cacheFileName) {
-		cacheFileName = path.join(process.cwd(), `.${moduleName}.${func.name}.json`);
-	}
+	let cacheFileName = path.join(process.cwd(), `.${moduleName}.${funcName}.json`);
 
 	touch.sync(cacheFileName);
 	var cacheFile = fs.readFileSync(cacheFileName, "utf8");
 	let cache = cacheFile.length && JSON.parse(cacheFile) || {};
 
 	return function() {
-		var key = JSON.stringify(arguments);
-		if (key in cache) {
-			return cache[key];
-		}
-
-		var result = func.apply(this, arguments);
-		cache[key] = result;
-
-		fs.writeFile(cacheFileName, JSON.stringify(cache));
-
-		return result;
+		return new Promise((resolve, reject) => {
+			var key = JSON.stringify(arguments);
+			if (key in cache) {
+				resolve(cache[key]);
+			}
+			else {
+				func.apply(this, arguments)
+					.then(result => cache[key] = result)
+					.then(result => {
+						writeFile(cacheFileName, JSON.stringify(cache));
+						return result;
+					})
+					.then(resolve);
+			}
+		});
 	};
 }

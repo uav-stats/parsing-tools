@@ -22,6 +22,8 @@
   "homepage": "https://github.com/uav-stats/parsing-tools#readme",
   "dependencies": {
     "bluebird": "^3.2.2",
+    "google-timezone-api": "^1.0.1",
+    "node-geocoder": "^3.6.2",
     "touch": "^1.0.0"
   },
   "devDependencies": {
