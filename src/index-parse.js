@@ -28,10 +28,19 @@ program
 			})
 			.map(record => {
 				return geocode(`${record.location.city}, ${record.location.state}`)
+					.then(results => {
+						if (results.length) return results;
+
+						return geocode(record.location.state);
+					})
 					.then(results => results[0])
 					.then(result => {
 						record.location.latitude = result.latitude;
 						record.location.longitude = result.longitude;
+						return record;
+					})
+					.catch(err => {
+						console.error(err, record);
 						return record;
 					});
 			})
@@ -44,6 +53,10 @@ program
 						record.date.timeZoneId = result.timeZoneId;
 						record.date.timeZoneName = result.timeZoneName;
 						record.date.date = new Date(record.date.timestamp * 1000);
+						return record;
+					})
+					.catch(err => {
+						console.error(err, record);
 						return record;
 					});
 			})

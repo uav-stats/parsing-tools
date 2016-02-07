@@ -20,7 +20,9 @@ export default function RateLimit(fn, maxCallsPerSecond) {
         var item = queue.shift();
         if (item) {
             calls.push(Date.now().valueOf());
-            fn.apply(this, item.arguments).then(item.resolve);
+            fn.apply(this, item.arguments)
+                .then(item.resolve)
+                .catch(() => queue.push(item));
         }
 
         if (queue.length)
