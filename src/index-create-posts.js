@@ -36,7 +36,7 @@ function generateFileName(record, words) {
 	var title = record.report.narrative
 		.split(/\W+/)
 		.slice(0,words)
-		.join('-');
+		.join("-");
 
 	return `${dateString}-${location}-${title}`
 		.toLowerCase()

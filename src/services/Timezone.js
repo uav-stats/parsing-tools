@@ -14,10 +14,10 @@ let timezone = function(latitude, longitude, timestamp) {
 					reject(result);
 				else
 					resolve(result);
-			})
-
+			});
 		});
-}
+};
+
 let rateLimited = makeRateLimited(timezone, 10);
 
 export default makeCached(rateLimited, "timezone");

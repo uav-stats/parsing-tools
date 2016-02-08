@@ -25,6 +25,7 @@
     "commander": "^2.9.0",
     "excel": "^0.1.4",
     "google-timezone-api": "^1.0.1",
+    "natural": "thzinc/natural",
     "node-geocoder": "^3.6.2",
     "touch": "^1.0.0"
   },
